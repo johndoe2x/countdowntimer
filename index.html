@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: black;
+            color: white;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+        }
+        input {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            background: #ff4b2b;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #ff3a1f;
+        }
+        .countdown {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Countdown Timer</h1>
+    <div id="countdownList"></div>
+    <button onclick="addCountdown()">Add Countdown</button>
+    
+    <script>
+        function addCountdown() {
+            const container = document.createElement("div");
+            container.classList.add("container");
+            
+            const labelTask = document.createElement("label");
+            labelTask.innerText = "Task: ";
+            const taskInput = document.createElement("input");
+            taskInput.type = "text";
+            taskInput.placeholder = "Enter task name";
+            
+            const labelStart = document.createElement("label");
+            labelStart.innerText = "Start Date: ";
+            const startDate = document.createElement("input");
+            startDate.type = "date";
+            
+            const labelEnd = document.createElement("label");
+            labelEnd.innerText = "End Date: ";
+            const endDate = document.createElement("input");
+            endDate.type = "date";
+            
+            const startButton = document.createElement("button");
+            startButton.innerText = "Start Countdown";
+            startButton.onclick = function () { startCountdown(container, startDate, endDate, countdownDisplay); };
+            
+            const resetButton = document.createElement("button");
+            resetButton.innerText = "Reset";
+            resetButton.onclick = function () { resetCountdown(container, startDate, endDate, countdownDisplay); };
+            
+            const countdownDisplay = document.createElement("div");
+            countdownDisplay.classList.add("countdown");
+            
+            container.appendChild(labelTask);
+            container.appendChild(taskInput);
+            container.appendChild(document.createElement("br"));
+            container.appendChild(labelStart);
+            container.appendChild(startDate);
+            container.appendChild(document.createElement("br"));
+            container.appendChild(labelEnd);
+            container.appendChild(endDate);
+            container.appendChild(document.createElement("br"));
+            container.appendChild(startButton);
+            container.appendChild(resetButton);
+            container.appendChild(countdownDisplay);
+            
+            document.getElementById("countdownList").appendChild(container);
+        }
+        
+        function startCountdown(container, startDateInput, endDateInput, display) {
+            const startDate = new Date(startDateInput.value);
+            const endDate = new Date(endDateInput.value);
+            if (isNaN(startDate) || isNaN(endDate) || startDate >= endDate) {
+                display.innerHTML = "Please enter a valid date range.";
+                return;
+            }
+            
+            function updateCountdown() {
+                const now = new Date();
+                let diff = endDate - now;
+                if (diff <= 0) {
+                    display.innerHTML = "Time's up!";
+                    return;
+                }
+                let years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365));
+                diff -= years * (1000 * 60 * 60 * 24 * 365);
+                let months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30));
+                diff -= months * (1000 * 60 * 60 * 24 * 30);
+                let weeks = Math.floor(diff / (1000 * 60 * 60 * 24 * 7));
+                diff -= weeks * (1000 * 60 * 60 * 24 * 7);
+                let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                diff -= days * (1000 * 60 * 60 * 24);
+                let hours = Math.floor(diff / (1000 * 60 * 60));
+                diff -= hours * (1000 * 60 * 60);
+                let minutes = Math.floor(diff / (1000 * 60));
+                diff -= minutes * (1000 * 60);
+                let seconds = Math.floor(diff / 1000);
+                
+                display.innerHTML = `${years} years, ${months} months, ${weeks} weeks, ${days} days, ${hours} hrs, ${minutes} mins, ${seconds} secs left`;
+            }
+            setInterval(updateCountdown, 1000);
+            updateCountdown();
+        }
+        
+        function resetCountdown(container, startDateInput, endDateInput, display) {
+            startDateInput.value = "";
+            endDateInput.value = "";
+            display.innerHTML = "";
+        }
+    </script>
+</body>
+</html>
